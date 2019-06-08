@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   nav_msgs
   message_filters
+  riki_msgs
 )
 find_package(Qt5  REQUIRED COMPONENTS  Widgets  )
 

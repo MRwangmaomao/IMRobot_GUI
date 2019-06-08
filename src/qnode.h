@@ -19,6 +19,9 @@
 #include <string>
 #include <QThread>
 #include <QStringListModel>
+#include <riki_msgs/Imu.h>
+#include <riki_msgs/Battery.h>
+#include <riki_msgs/Velocities.h>
 
 /*****************************************************************************
 ** Namespaces
@@ -57,9 +60,8 @@ public:
 
     //void RecvTopicCallback(const std_msgs::StringConstPtr &msg);
 
-    void RecvIMUDataTopicCallback(const std_msgs::StringConstPtr &msg);
-    void RecvIMUMagTopicCallback(const std_msgs::StringConstPtr &msg);
-    void RecvIMUFilterParamTopicCallback(const std_msgs::StringConstPtr &msg);
+    void RecvBatteryTopicCallback(const riki_msgs::BatteryConstPtr &msg);
+
 
     QStringListModel* loggingModelLis()
         {return &logging_listen;}
@@ -71,15 +73,17 @@ public:
     void down();
     void left();
     void right();
+    void stop_thubot();
 Q_SIGNALS:
     void loggingUpdated();
     void loggingListen();
     void rosShutdown();
+    void batteryUpdated(float);
 
 private:
     int init_argc;
     char** init_argv;
-    ros::Publisher chatter_publisher;
+    ros::Publisher velcmd_publisher;
 
     // cmd vel
     ros::Publisher cmd_vel_subscriber;

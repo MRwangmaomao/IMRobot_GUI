@@ -39,7 +39,8 @@ private slots:
     *******************************************/
     void updateLoggingView(); // no idea why this can't connect automatically
     void updateLogListen();
-    void updateIMUDataView();
+    void updatabatterydata(float);
+//    void updateIMUDataView();
 
 
     void on_checkbox_use_environment_stateChanged(int arg1);
@@ -55,6 +56,10 @@ private slots:
     void on_pushButtonThubot_clicked();
 
     void on_pushButtonIMUdatasave_clicked();
+
+    void on_pushButtonSavMap_clicked();
+
+    void on_pushButtonLoadMap_clicked();
 
 private:
     Ui::MainWindow *ui;

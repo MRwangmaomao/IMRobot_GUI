@@ -56,10 +56,8 @@ bool QNode::init()
     ros::NodeHandle n;
     // Add your ros communications here.
 
-    chatter_publisher = n.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 1000);
-    IMU_mag_subscriber = n.subscribe("/imu/mag", 100, &QNode::RecvIMUDataTopicCallback, this);
-    IMU_data_subscriber = n.subscribe("/imu/data", 100, &QNode::RecvIMUMagTopicCallback, this);
-    IMU_filter_madgwick_param_subscriber = n.subscribe("/imu_filter_madgwick/parameter_updates", 100, &QNode::RecvIMUFilterParamTopicCallback, this);
+    velcmd_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
+    battery_subscriber = n.subscribe("/battery",100,&QNode::RecvBatteryTopicCallback, this);
 
     //ros::spin();
     qDebug() << "I start";
@@ -87,29 +85,18 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
     return true;
 }
 
-void QNode::RecvIMUDataTopicCallback(const std_msgs::StringConstPtr &msg)
+void QNode::RecvBatteryTopicCallback(const riki_msgs::BatteryConstPtr &msg)
 {
-    log_listen(Info, std::string("I heard: ")+msg->data.c_str());
-}
-
-void QNode::RecvIMUMagTopicCallback(const std_msgs::StringConstPtr &msg)
-{
-    log_listen(Info, std::string("I heard: ")+msg->data.c_str());
-}
-
-void QNode::RecvIMUFilterParamTopicCallback(const std_msgs::StringConstPtr &msg)
-{
-
+    float value = msg->battery;
+    Q_EMIT batteryUpdated(value);
 }
 
 void QNode::run()
 {
     ros::Rate loop_rate(1);
     ros::NodeHandle n;
-    chatter_publisher = n.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 1000);
-    IMU_mag_subscriber = n.subscribe("/imu/mag", 100, &QNode::RecvIMUDataTopicCallback, this);
-    IMU_data_subscriber = n.subscribe("/imu/data", 100, &QNode::RecvIMUMagTopicCallback, this);
-    IMU_filter_madgwick_param_subscriber = n.subscribe("/imu_filter_madgwick/parameter_updates", 100, &QNode::RecvIMUFilterParamTopicCallback, this);
+    velcmd_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
+    battery_subscriber = n.subscribe("/battery",100,&QNode::RecvBatteryTopicCallback, this);
     ros::spin();
     loop_rate.sleep();
     std::cout << "Ros shutdown, proceeding to close the gui." << std::endl;
@@ -210,11 +197,11 @@ void QNode::up()
     geometry_msgs::Twist msg;
     msg.linear.x = 2.0;
     msg.angular.z = 0.0;
-    chatter_publisher.publish(msg);
+    velcmd_publisher.publish(msg);
 
     std::stringstream ss;
     std_msgs::String logmsg;
-    ss << "up x= 0.0, z = 2.0";
+    ss << "up x= 2.0, z = 0.0";
     logmsg.data = ss.str();
     log(Info,std::string("I sent: ")+logmsg.data);
 
@@ -225,11 +212,11 @@ void QNode::down()
     geometry_msgs::Twist msg;
     msg.linear.x = -2.0;
     msg.angular.z = 0.0;
-    chatter_publisher.publish(msg);
+    velcmd_publisher.publish(msg);
 
     std::stringstream ss;
     std_msgs::String logmsg;
-    ss << "Down x= 0.0, z = -2.0";
+    ss << "Down x= -2.0, z = 0.0";
     logmsg.data = ss.str();
     log(Info,std::string("I sent: ")+logmsg.data);
 }
@@ -239,7 +226,7 @@ void QNode::left()
     geometry_msgs::Twist msg;
     msg.linear.x = 2.0;
     msg.angular.z = 1.57;
-    chatter_publisher.publish(msg);
+    velcmd_publisher.publish(msg);
 
     std::stringstream ss;
     std_msgs::String logmsg;
@@ -253,13 +240,21 @@ void QNode::right()
     geometry_msgs::Twist msg;
     msg.linear.x = 2.0;
     msg.angular.z = -1.57;
-    chatter_publisher.publish(msg);
+    velcmd_publisher.publish(msg);
 
     std::stringstream ss;
     std_msgs::String logmsg;
     ss << "up x= 2.0, z = -1.57";
     logmsg.data = ss.str();
     log(Info,std::string("I sent: ")+logmsg.data);
+}
+
+void QNode::stop_thubot()
+{
+    geometry_msgs::Twist msg;
+    msg.linear.x = 0.0;
+    msg.angular.z = 0.0;
+    velcmd_publisher.publish(msg);
 }
 
 }  // namespace test_gui

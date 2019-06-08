@@ -43,6 +43,11 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent):
     {
         on_checkbox_use_environment_stateChanged(true);
     }
+
+    /********************
+    ** Update
+    *********************/
+    QObject::connect(&qnode, &QNode::batteryUpdated, this, &MainWindow::updatabatterydata);
 }
 
 MainWindow::~MainWindow()
@@ -73,7 +78,7 @@ void MainWindow::on_pushButtonConnect_clicked()
 
 void MainWindow::on_pushButtonStop_clicked()
 {
-    qnode.ros_test("hello ros");
+    qnode.stop_thubot();
 }
 
 void MainWindow::on_pushButtonQuit_clicked()
@@ -199,3 +204,18 @@ void MainWindow::on_pushButtonIMUdatasave_clicked()
     qDebug() << current_date;
 }
 
+
+void MainWindow::updatabatterydata(float value)
+{
+    ui->label_battary_arm->setText(QString("%3V").arg(value));
+}
+
+void MainWindow::on_pushButtonSavMap_clicked()
+{
+
+}
+
+void MainWindow::on_pushButtonLoadMap_clicked()
+{
+
+}
