@@ -15,6 +15,10 @@ find_package(catkin REQUIRED COMPONENTS
   riki_msgs
 )
 find_package(Qt5  REQUIRED COMPONENTS  Widgets  )
+file(GLOB_RECURSE QRC_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.qrc)
+set(QRC_SOURCE_FILES image.qrc)
+qt5_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
+
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -38,9 +42,8 @@ include_directories(
     ${catkin_INCLUDE_DIRS}
 )
 
- add_executable(thubot ${SOURCES} ${FORMS} )
+ add_executable(thubot ${SOURCES} ${FORMS}  ${QRC_FILES})
  target_link_libraries(thubot  Qt5::Widgets ${catkin_LIBRARIES})
-
 
 
 

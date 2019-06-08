@@ -3,6 +3,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QAction>
+#include <QIcon>
 MainWindow::MainWindow(int argc, char** argv, QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -10,6 +11,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent):
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(2);
+
+
 //    QObject::connect(ui->actionAbout_Qt, SIGNAL(triggered(bool)), qApp, SLOT(aboutQt())); // qApp is a global variable for the application
 //    ui->tab_manager->setCurrentIndex(0); // ensure the first tab is showing - qt-designer should have this already hardwired, but often loses it (settings?).
     QObject::connect(&qnode, SIGNAL(rosShutdown()), this, SLOT(close()));
@@ -218,4 +221,9 @@ void MainWindow::on_pushButtonSavMap_clicked()
 void MainWindow::on_pushButtonLoadMap_clicked()
 {
 
+}
+
+void MainWindow::on_pushButtonGrasp_clicked()
+{
+    qnode.pub_grasp_task();
 }

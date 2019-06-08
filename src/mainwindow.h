@@ -61,6 +61,8 @@ private slots:
 
     void on_pushButtonLoadMap_clicked();
 
+    void on_pushButtonGrasp_clicked();
+
 private:
     Ui::MainWindow *ui;
     QNode qnode;

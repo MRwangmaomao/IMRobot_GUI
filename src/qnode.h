@@ -22,6 +22,7 @@
 #include <riki_msgs/Imu.h>
 #include <riki_msgs/Battery.h>
 #include <riki_msgs/Velocities.h>
+#include <riki_msgs/grasptask.h>
 
 /*****************************************************************************
 ** Namespaces
@@ -74,6 +75,7 @@ public:
     void left();
     void right();
     void stop_thubot();
+    void pub_grasp_task();
 Q_SIGNALS:
     void loggingUpdated();
     void loggingListen();
@@ -83,15 +85,16 @@ Q_SIGNALS:
 private:
     int init_argc;
     char** init_argv;
-    ros::Publisher velcmd_publisher;
+
 
     // cmd vel
-    ros::Publisher cmd_vel_subscriber;
+    ros::Publisher velcmd_publisher;
 
-    // IMU
-    ros::Subscriber IMU_mag_subscriber;
-    ros::Subscriber IMU_data_subscriber;
-    ros::Subscriber IMU_filter_madgwick_param_subscriber;
+    // grasp_start
+    ros::Publisher grasp_start_publisher;
+
+    // grasp_ok
+    ros::Subscriber grasp_stop_subscriber;
 
     // odom
     ros::Subscriber odom_subscriber;

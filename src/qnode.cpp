@@ -58,6 +58,7 @@ bool QNode::init()
 
     velcmd_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
     battery_subscriber = n.subscribe("/battery",100,&QNode::RecvBatteryTopicCallback, this);
+    grasp_start_publisher = n.advertise<riki_msgs::grasptask>("/grasp_start",10);
 
     //ros::spin();
     qDebug() << "I start";
@@ -96,6 +97,7 @@ void QNode::run()
     ros::Rate loop_rate(1);
     ros::NodeHandle n;
     velcmd_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
+    grasp_start_publisher = n.advertise<riki_msgs::grasptask>("/grasp_start",10);
     battery_subscriber = n.subscribe("/battery",100,&QNode::RecvBatteryTopicCallback, this);
     ros::spin();
     loop_rate.sleep();
@@ -255,6 +257,14 @@ void QNode::stop_thubot()
     msg.linear.x = 0.0;
     msg.angular.z = 0.0;
     velcmd_publisher.publish(msg);
+}
+
+void QNode::pub_grasp_task()
+{
+    riki_msgs::grasptask msg;
+    msg.isstart = true;
+    grasp_start_publisher.publish(msg);
+    qDebug() << "start to grasp";
 }
 
 }  // namespace test_gui
